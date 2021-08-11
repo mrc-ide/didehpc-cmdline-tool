@@ -11,7 +11,7 @@ namespace didehpc
         private int Cancel_jobs(string[] args)
         {
             
-            if ((int) args.Length != 3)
+            if ((int) args.Length != 4)
             {
                 Console.WriteLine("Syntax: didehpc cancel scheduler user id1,id2,id3,id4...");
                 Console.WriteLine("                                   or id_from:id_to");
