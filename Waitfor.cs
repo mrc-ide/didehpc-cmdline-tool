@@ -10,21 +10,20 @@ namespace didehpc
 {
     public partial class Didehpc
     {
-        private void wait_for(string[] args)
+        private int Wait_for(string[] args)
         {
             if ((int)args.Length != 5)
             {
                 Console.WriteLine("Syntax: didehpc waitfor scheduler base64_email base64_group_name 123,456,789");
-                Environment.Exit(1);
+                return 1;
             }
-            
+
             string scheduler_name = args[1];
-            string email = base64_decode(args[2]);
-            string group_name = base64_decode(args[3]);
+            string email = Base64_decode(args[2]);
+            string group_name = Base64_decode(args[3]);
             string[] job_ids = args[4].Split(new char[] { ',' });
 
-            IScheduler scheduler = new Scheduler();
-            scheduler.Connect(scheduler_name);
+            IScheduler scheduler = Get_scheduler(scheduler_name);
             int n_all = 0;
             int n_finished = 0;
             int n_failed = 0;
@@ -75,7 +74,7 @@ namespace didehpc
                 "Unaccounted for: ", n_other, Environment.NewLine });
             smtpClient.Send(mailMessage);
             scheduler.Close();
-            Environment.Exit(0);
+            return 0;
         }
     }
 }

@@ -8,47 +8,25 @@ namespace didehpc
         public Didehpc()
         {
         }
-
-        private string strip_dide(string s)
+        private int Unknown_command(string command)
         {
-            while (s.ToUpper().StartsWith("DIDE\\"))
-            {
-                s = s.Substring(5);
-            }
-            return s;
-        }
-
-        private string base64_decode(string s)
-        {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(s));
+            Console.WriteLine("Command " + command + " not found.");
+            Console.WriteLine("Commands: bump, cancel, ldap, list, shunt, waitfor");
+            return 1;
         }
 
         public static void Main(string[] args)
         {
             Didehpc D = new Didehpc();
-            string command = "<none>";
-            if (args.Length >= 1)
-            {
-                command = args[0].ToLower();
-                switch (command)
-                {
-                    case "ldap":
-                        D.ldap_madness(args);
-                        Environment.Exit(0);
-                        break;
-                    case "cancel":
-                        D.cancel_jobs(args);
-                        Environment.Exit(0);
-                        break;
-                    case "list":
-                        D.list_jobs(args);
-                        Environment.Exit(0);
-                        break;
-                }
-            }
-            Console.WriteLine("Command " + command + " not found.");
-            Console.WriteLine("Commands: cancel, ldap, list, waitfor");
-            Environment.Exit(1);
+            string command = (args.Length >= 1) ? args[0].ToLower() : "<none>";
+            Environment.Exit(
+                command == "bump"     ? D.Bump_jobs(args) :
+                command == "cancel"   ? D.Cancel_jobs(args) :
+                command == "ldap"     ? D.Ldap_madness(args) :
+                command == "list"     ? D.List_jobs(args) :
+                command == "shunt"    ? D.Shunt_jobs(args) :
+                command == "waitfor"  ? D.Wait_for(args) :
+                                        D.Unknown_command(command));
         }
     }
 }

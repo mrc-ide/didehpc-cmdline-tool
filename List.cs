@@ -20,29 +20,21 @@ namespace didehpc
             return (s == null) ? "\t" : s + "\t";
         }
 
-        private void list_jobs(string[] args)
+        private int List_jobs(string[] args)
         {
             if ((int)args.Length < 4)
             {
                 Console.WriteLine("Syntax: didehpc list scheduler state user no_jobs");
                 Console.WriteLine("Output: (TSV) Id Name State Resources User StartTime SubmitTime EndTime JobTemplate");
-                Environment.Exit(1);
+                return 1;
             }
             string scheduler_name = args[1];
             string state = args[2];
             string user = args[3];
             int no_jobs = short.Parse(args[4]);
             no_jobs = (no_jobs < 0) ? 32767 : no_jobs;
-            
-            IScheduler scheduler = new Scheduler();
-            Console.WriteLine("Scheduler = " + scheduler_name);
-            try
-            {
-                scheduler.Connect(scheduler_name);
-            } catch (Exception e)
-            {
-                Console.WriteLine("Error connection to scheduler " + scheduler_name + " - " + e.ToString());
-            }
+
+            IScheduler scheduler = Get_scheduler(scheduler_name);
             IFilterCollection job_filters = scheduler.CreateFilterCollection();
             job_filters.Add(FilterOperator.Equal, PropId.Job_State,
                    (state == "Running") ? JobState.Running :
@@ -82,9 +74,9 @@ namespace didehpc
             PropertyRowSet rows = job_enum.GetRows(no_jobs);
             if ((rows == null) || (rows.Length == 0)) {
                 scheduler.Close();
-                Environment.Exit(1);
+                return 1;
             }
-            
+
             for (int i = 0; i < rows.Rows.Length; i++)
             {
                 PropertyRow row = rows.Rows[i];
@@ -92,13 +84,15 @@ namespace didehpc
                 {
                     continue;
                 }
-                
+
                 Console.Write(row[JobPropertyIds.Id].Value + "\t");
                 Console.Write(thing_or_tab(row[JobPropertyIds.Name]));
                 Console.Write(row[JobPropertyIds.State].Value + "\t");
+
                 string resource_unit = (row[JobPropertyIds.UnitType].Value.Equals(JobUnitType.Core)) ? "core" :
                                        (row[JobPropertyIds.UnitType].Value.Equals(JobUnitType.Node)) ? "node" :
                                        (row[JobPropertyIds.UnitType].Value.Equals(JobUnitType.Socket)) ? "socket" : "";
+
                 PropertyId resource_id = (resource_unit == "core") ? JobPropertyIds.MaxCores :
                                          (resource_unit == "node") ? JobPropertyIds.MaxNodes :
                                          (resource_unit == "socket") ? JobPropertyIds.MaxSockets : null;
@@ -113,6 +107,7 @@ namespace didehpc
                 Console.Write("\n");
             }
             scheduler.Close();
+            return 0;
         }
     }
 }

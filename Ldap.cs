@@ -8,7 +8,7 @@ namespace didehpc
 {
     public partial class Didehpc
     {
-        private void ldap_madness(string[] args)
+        private int Ldap_madness(string[] args)
         {
             // For given (Base 64 encoded) user and password,
             // prints to the console all the groups that user
@@ -17,19 +17,19 @@ namespace didehpc
             if (args.Length != 3)
             {
                 Console.WriteLine("Syntax: didehpc ldap base64_user base64_password");
-                Environment.Exit(1);
+                return (1);
             }
 
             try
             {
-                string user = base64_decode(args[1]);
+                string user = Base64_decode(args[1]);
 
                 // user should only contain letters and numbers and dash - just to ensure no
                 // injection in the LDAP query itself.
 
                 user = Regex.Replace(user, @"[^\w\d-]", "");
 
-                string pw = base64_decode(args[2]);
+                string pw = Base64_decode(args[2]);
                 string local_domain = "dide.local";
                 string domain_controller = "fi--didedc1.dide.ic.ac.uk";
 
@@ -74,12 +74,13 @@ namespace didehpc
                         }
                     }
                 }
+                return(0);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message == "The supplied credential is invalid." ?
                                                "CREDENTIAL_ERROR" : e.Message);
-                Environment.Exit(1);
+                return (1);
             }
         }
     }
