@@ -15,13 +15,14 @@ namespace didehpc
             if ((int)args.Length != 5)
             {
                 Console.WriteLine("Syntax: didehpc waitfor scheduler base64_email base64_group_name 123,456,789");
+                Console.WriteLine("                                                              or id_from:id_to");
                 return 1;
             }
 
             string scheduler_name = args[1];
             string email = Base64_decode(args[2]);
             string group_name = Base64_decode(args[3]);
-            string[] job_ids = args[4].Split(new char[] { ',' });
+            List<int> job_ids = Parse_ids(args[4]);
 
             IScheduler scheduler = Get_scheduler(scheduler_name);
             int n_all = 0;
@@ -29,9 +30,9 @@ namespace didehpc
             int n_failed = 0;
             int n_canceled = 0;
             int n_other = 0;
-            while (n_all != job_ids.Length)
+            while (n_all != job_ids.Count)
             {
-                ISchedulerJob schedulerJob = scheduler.OpenJob(int.Parse(job_ids[n_all]));
+                ISchedulerJob schedulerJob = scheduler.OpenJob(job_ids[n_all]);
                 if (schedulerJob == null)
                 {
                     n_all++;
@@ -57,6 +58,7 @@ namespace didehpc
                     Thread.Sleep(5000);
                 }
             }
+
             MailMessage mailMessage = new MailMessage("dide-it@imperial.ac.uk", email);
             SmtpClient smtpClient = new SmtpClient()
             {

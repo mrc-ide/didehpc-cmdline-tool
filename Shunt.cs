@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Hpc.Scheduler;
 using Microsoft.Hpc.Scheduler.Properties;
 
@@ -13,41 +14,39 @@ namespace didehpc
             if ((int) args.Length != 4)
             {
                 Console.WriteLine("Syntax: didehpc shunt scheduler id1,id2,id3,id4... template");
+                Console.WriteLine("                             or id_from:id_to");
+
                 return 1;
             }
 
             string scheduler_name = args[1];
-            string[] job_ids = args[2].Split(new char[] { ',' });
+            List<int> job_ids = Parse_ids(args[2]);
             string new_template = args[3];
 
-            IScheduler scheduler = Get_scheduler(scheduler_name);
-            for (int i = 0; i < (int) job_ids.Length; i++)
-            {
-                string job_id = job_ids[i];
-                int job_id_int = -1;
-                if (!int.TryParse(job_id, out job_id_int))
-                {
-                    Console.Write(string.Concat(job_id, "\tID_ERROR"));
-                    continue;
-                }
+            // TO-DO: Check new_template is valid template and nodegroup
 
+            IScheduler scheduler = Get_scheduler(scheduler_name);
+            for (int i = 0; i < job_ids.Count; i++)
+            {
+                int job_id_int = job_ids[i];
                 ISchedulerJob scheduler_job = Get_job(scheduler, job_id_int);
 
                 if (scheduler_job == null)
                 {
-                    Console.WriteLine(job_id + "\tNOT_FOUND\n");
+                    Console.WriteLine(job_id_int + "\tNOT_FOUND\n");
                     continue;
                 }
 
-                // Need job to be normal priority to move.
+                // Need job to be normal priority to requeue, so...
 
-                JobPriority orig_priority = scheduler_job.Priority;
-                string orig_template = scheduler_job.JobTemplate;
-
+                int orig_priority = scheduler_job.ExpandedPriority;
                 scheduler_job.Priority = JobPriority.Normal;
                 scheduler_job.Commit();
-                scheduler.ConfigureJob(scheduler_job.Id);
 
+                // Put job into configuring state so we can change template and group
+                // Then resubmit the job
+
+                scheduler.ConfigureJob(scheduler_job.Id);
                 scheduler_job.SetJobTemplate(new_template);
                 StringCollection node_group = new StringCollection();
                 node_group.Add(new_template);
@@ -55,7 +54,12 @@ namespace didehpc
                 scheduler_job.Commit();
                 scheduler_job.Requeue();
 
-                Console.Write(job_id + "\tOK\n");
+                // Set the priority to what it was before
+                
+                scheduler_job.ExpandedPriority = orig_priority;
+                scheduler_job.Commit();
+
+                Console.Write(job_id_int + "\tOK\n");
                 
             }
             scheduler.Close();
