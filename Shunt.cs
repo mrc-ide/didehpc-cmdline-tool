@@ -33,13 +33,18 @@ namespace didehpc
 
                 if (scheduler_job == null)
                 {
-                    Console.WriteLine(job_id_int + "\tNOT_FOUND\n");
+                    Console.WriteLine(job_id_int + "\tNOT_FOUND");
+                    continue;
+                }
+
+                if (scheduler_job.State != JobState.Queued)
+                {
+                    Console.WriteLine(job_id_int + "\tNOT_QUEUED");
                     continue;
                 }
 
                 // Need job to be normal priority to requeue, so...
 
-                int orig_priority = scheduler_job.ExpandedPriority;
                 scheduler_job.Priority = JobPriority.Normal;
                 scheduler_job.Commit();
 
@@ -53,11 +58,6 @@ namespace didehpc
                 scheduler_job.NodeGroups = node_group;
                 scheduler_job.Commit();
                 scheduler_job.Requeue();
-
-                // Set the priority to what it was before
-                
-                scheduler_job.ExpandedPriority = orig_priority;
-                scheduler_job.Commit();
 
                 Console.Write(job_id_int + "\tOK\n");
                 

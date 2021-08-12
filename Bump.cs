@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Hpc.Scheduler;
-using Microsoft.Hpc.Scheduler.Properties;
 
 namespace didehpc
 {
