@@ -9,13 +9,13 @@ with the scheduler, avoiding restart overheads.
 It is an admin tool, and you'll need cluster admin rights to use. It supports the
 HPC Web Portal. 
 
-Usage:
+## Usage:
 
 `didehpc` alone will give you a brief help message, including the 
 available commands, currently: `bump`, `cancel`, `ldap`, `list`, `shunt`
 and `waitfor`. Each of those commands will take other arguments, as below.
 
-## bump - Raising job priority
+### bump - Raising job priority
 
 Most of the time, if a job can be run, it will be run. Raising priority
 only affects jobs where we have a particular condition, for example:-
@@ -46,7 +46,7 @@ of jobs. `priority`, if given, is a number between `0` and `4000`, where `0`
 is the lowest priority, `4000` is the highest. If omitted, then jobs will
 have their priority raised by `10`.
 
-## cancel - Mass cancellation of jobs
+### cancel - Mass cancellation of jobs
 
 For simple command-line cancelling of a number of jobs - currently
 for a named user. (We could consider wild-carding user here...)
@@ -60,7 +60,7 @@ where `STATUS` is one of `OK` (successful cancel), `NOT_FOUND` where an id
 was not found in the scheduler, `WRONG_USER` where the job belonged to 
 someone other than <user>, or `WRONG_STATE` where the job was not running.
 
-## ldap - Lookup group memberships
+### ldap - Lookup group memberships
 
 Used mainly internally, but this looks up which groups a user belongs to
 in the DIDE domain controllers. This is used for determining which templates
@@ -72,7 +72,7 @@ Where the user and password and base-64 encoded in the standard way. The output
 is a line-by-line list of domain groups the user belongs to, or `CREDENTIAL_ERROR`
 if authentication failed.
 
-## list - List current jobs
+### list - List current jobs
 
 This gives us a table of running jobs, including their Id, Name, State, Resources
 the jobs are using, the user (owner technically), starting time, submission time,
@@ -86,7 +86,7 @@ where `<scheduler>` is the headnode, `<state>` is one of `Running`, `Queued`, `F
 `<user>` can be a username, or `*` for wildcard. The `<no_jobs>` limits the number of
 rows, or a negative number will return 32,767.
 
-## shunt - Moving from one template to another
+### shunt - Moving from one template to another
 
 You may want to shift jobs from the template they were initially submitted with
 to a different one. For example:-
@@ -99,7 +99,7 @@ to a different one. For example:-
 
 `didehpc shunt <scheduler> <id | id1,id2,id3 | idx:idy> <template>`
 
-## waitfor
+### waitfor
 
 This is a blocking call, which sends you an email when a job (or bunch of jobs) finishes, 
 and then terminates. So this needs to be called in another process if you want code to carry

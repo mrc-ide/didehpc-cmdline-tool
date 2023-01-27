@@ -111,7 +111,7 @@ namespace didehpc
                         }
                         res.Add(id);
                     }
-                    {
+                    else {
                         Console.WriteLine("Skipping non-integer " + id);
                     }
                 }
