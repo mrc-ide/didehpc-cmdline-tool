@@ -28,7 +28,7 @@ namespace didehpc
                 Console.WriteLine("Output: (TSV) Id Name State Resources User StartTime SubmitTime EndTime JobTemplate");
                 return 1;
             }
-            string scheduler_name = args[1];
+            string scheduler_name = (args[1].Equals(".")) ? System.Environment.MachineName : args[1];
             string state = args[2];
             string user = args[3];
             int no_jobs = short.Parse(args[4]);

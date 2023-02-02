@@ -18,7 +18,7 @@ namespace didehpc
                 return 1;
             }
 
-            string scheduler_name = args[1];
+            string scheduler_name = (args[1].Equals(".")) ? System.Environment.MachineName : args[1];
             string email = Base64_decode(args[2]);
             string group_name = Base64_decode(args[3]);
             List<int> job_ids = Parse_ids(args[4]);

@@ -19,7 +19,7 @@ namespace didehpc
                 return 1;
             }
 
-            string scheduler_name = args[1];
+            string scheduler_name = (args[1].Equals(".")) ? System.Environment.MachineName : args[1];
             List<int> job_ids = Parse_ids(args[2]);
             string new_template = args[3];
 

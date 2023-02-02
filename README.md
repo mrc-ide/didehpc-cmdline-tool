@@ -40,11 +40,13 @@ something you can specify, but you don't have to. Hence:-
 
 `didehpc bump <scheduler> <id | id1,id2,id3 | idx:idy> [priority]`
 
-where `scheduler` is the name of the cluster headnode. `id` is a job id, 
+where `scheduler` is the name of the cluster headnode, or for convenience,
+`.` is shorthand for the current machine, if you're running the tool from
+the command-line on the scheduler itself. `id` is a job id, 
 and can be a single job, a comma-separated list of jobs, or a contiguous range
 of jobs. `priority`, if given, is a number between `0` and `4000`, where `0`
 is the lowest priority, `4000` is the highest. If omitted, then jobs will
-have their priority raised by `10`.
+have their priority raised by `10`, up to the maximum.
 
 ### cancel - Mass cancellation of jobs
 
