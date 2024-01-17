@@ -36,7 +36,9 @@ namespace didehpc
 
             IScheduler scheduler = Get_scheduler(scheduler_name);
             IFilterCollection job_filters = scheduler.CreateFilterCollection();
-            job_filters.Add(FilterOperator.Equal, PropId.Job_State,
+            if (!state.Equals("*"))
+            {
+                job_filters.Add(FilterOperator.Equal, PropId.Job_State,
                    (state == "Running") ? JobState.Running :
                    (state == "Queued") ? JobState.Queued :
                    (state == "Finished") ? JobState.Finished :
@@ -46,7 +48,7 @@ namespace didehpc
                    (state == "Configuring") ? JobState.Configuring :
                    (state == "Finishing") ? JobState.Finishing :
                    JobState.All);
-
+            }
             if (!user.Equals("*"))
             {
                 job_filters.Add(FilterOperator.Equal, PropId.Job_UserName, user);
