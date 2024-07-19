@@ -22,16 +22,16 @@ namespace didehpc
 
             try
             {
-                string user = Base64_decode(args[1]);
+                string user = (!b64) ? Base64_decode(args[1])  : args[1];
 
                 // user should only contain letters and numbers and dash - just to ensure no
                 // injection in the LDAP query itself.
 
                 user = Regex.Replace(user, @"[^\w\d-]", "");
 
-                string pw = Base64_decode(args[2]);
+                string pw = (!b64) ? Base64_decode(args[2]) : args[2];
                 string local_domain = "dide.local";
-                string domain_controller = "fi--didedc1.dide.ic.ac.uk";
+                string domain_controller = "wpia-didedc1.dide.ic.ac.uk";
 
                 // Establish the connection to LDAP as the given user.
 

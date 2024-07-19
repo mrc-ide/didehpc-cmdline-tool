@@ -12,7 +12,7 @@ namespace didehpc
         }
         private int Unknown_command(string command)
         {
-            Console.WriteLine("didehpc v0.10");
+            Console.WriteLine("didehpc v0.11");
             Console.WriteLine("Command " + command + " not found.");
             Console.WriteLine("Commands: bump      -  Change priority of multiple jobs");
             Console.WriteLine("          cancel    -  Cancel multiple jobs");
