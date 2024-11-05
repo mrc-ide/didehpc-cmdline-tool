@@ -51,7 +51,6 @@ namespace didehpc
                     Console.WriteLine(job_id_int + "\tNOT_FOUND\n");
                     continue;
                 }
-
                 if (argc == 3) new_priority = Math.Min(4000, scheduler_job.ExpandedPriority + 10);
                 scheduler_job.ExpandedPriority = new_priority;
                 scheduler_job.Commit();

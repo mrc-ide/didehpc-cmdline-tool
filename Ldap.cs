@@ -31,7 +31,7 @@ namespace didehpc
 
                 string pw = (!b64) ? Base64_decode(args[2]) : args[2];
                 string local_domain = "dide.local";
-                string domain_controller = "wpia-didedc1.dide.ic.ac.uk";
+                string domain_controller = "wpia-didedc2.dide.ic.ac.uk";
 
                 // Establish the connection to LDAP as the given user.
 
